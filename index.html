@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dexdogs | Environmental Index</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. CUSTOM FONT FOR LOGO ONLY */
         @font-face {
             font-family: 'BPdots';
             src: url('./BPdots.otf') format('opentype'),
@@ -22,39 +21,38 @@
             --text: #ffffff;
             --text-gray: #a1a1aa;
             --accent: #3b82f6;
-            
             --font-logo: 'BPdots', 'Courier New', monospace; 
             --font-main: 'Inter', sans-serif; 
         }
         
-        body { margin: 0; font-family: var(--font-main); background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { margin: 0; font-family: var(--font-main); background-color: var(--bg); color: var(--text); overflow-x: hidden; width: 100vw; height: 100vh; overscroll-behavior: none; }
         
         /* Navigation */
         nav { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 1000; box-sizing: border-box; backdrop-filter: blur(5px); }
         
         .logo-container { display: flex; align-items: center; gap: 15px; }
-        
-        /* INCREASED LOGO SIZE HERE */
-        .logo-img { height: 60px; width: auto; }
-        
-        .logo-text { 
-            font-family: var(--font-logo); 
-            font-size: 1.5rem; 
-            letter-spacing: 0.05em;
-            color: white;
-            /* REMOVED text-transform: uppercase; */
-        }
-
+        .logo-img { height: 60px; width: auto; transition: height 0.3s; }
+        .logo-text { font-family: var(--font-logo); font-size: 1.5rem; letter-spacing: 0.05em; color: white; }
         .nav-link { color: var(--text-gray); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--text); }
 
         /* Hero Section */
         .hero { position: relative; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
         
-        #globe-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; cursor: grab; }
+        /* CANVAS FIXES FOR MOBILE */
+        #globe-canvas { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 0; 
+            cursor: grab; 
+            touch-action: none; /* Critical for Android/iOS touch handling */
+        }
         #globe-canvas:active { cursor: grabbing; }
 
-        .hero-content { z-index: 1; padding: 0 1rem; pointer-events: none; }
+        .hero-content { z-index: 1; padding: 0 1rem; pointer-events: none; width: 100%; box-sizing: border-box; }
         .hero-content > * { pointer-events: auto; }
 
         h1 { 
@@ -63,11 +61,8 @@
             font-size: 4rem; 
             margin: 0 0 1.5rem 0; 
             letter-spacing: -0.04em;
-            
-            /* FIX FOR CUT OFF 'g' */
             line-height: 1.2; 
             padding-bottom: 0.1em;
-            
             background: linear-gradient(to bottom right, #fff, #999); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
@@ -84,19 +79,24 @@
             font-weight: 700;
             transition: all 0.2s; 
         }
-        .btn:hover { background: var(--accent); color: white; box-shadow: 0 0 25px rgba(59, 130, 246, 0.6); }
-
+        
         /* Footer */
         footer { text-align: center; padding: 3rem; color: var(--text-gray); font-size: 0.875rem; border-top: 1px solid rgba(255,255,255,0.05); background: var(--bg); position: relative; z-index: 2; }
         
-        @media (max-width: 768px) { h1 { font-size: 2.8rem; } }
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 768px) { 
+            h1 { font-size: 2.2rem; margin-bottom: 2rem; } 
+            .logo-img { height: 40px; } /* Smaller logo on mobile */
+            .logo-text { font-size: 1.2rem; }
+            nav { padding: 1rem; }
+        }
     </style>
 </head>
 <body>
 
 <nav>
     <div class="logo-container">
-        <img src="logo.png" alt="dog logo" class="logo-img">
+        <img src="logo.png" alt="dexdogs logo" class="logo-img">
         <span class="logo-text">dexdogs</span>
     </div>
     <div><a href="mailto:contact@dexdogs.com" class="nav-link">Contact</a></div>
@@ -122,23 +122,30 @@
     let particles = [];
     
     // GLOBE SETTINGS
-    const globeRadius = 260;
-    const particleCount = 750; 
+    // Dynamically adjust radius for mobile vs desktop
+    const isMobile = window.innerWidth < 768;
+    const globeRadius = isMobile ? 160 : 260; 
+    const particleCount = isMobile ? 500 : 750; // Reduce count slightly for mobile performance
     
-    // Rotation State
     let rotation = { x: 0, y: 0 };
     let targetRotation = { x: 0, y: 0 };
     let isDragging = false;
     let lastMouse = { x: 0, y: 0 };
 
-    // SYMBOLS
     const symbols = ['0', '1', 'KWh', 'CO\u2082', 'CH\u2084', 'kgCO\u2082e', 'ft', 'lbs', '$'];
 
     function resize() {
+        // High DPI Display Support (Retina Fix)
+        const dpr = window.devicePixelRatio || 1;
         width = window.innerWidth;
         height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
+        
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        
+        ctx.scale(dpr, dpr);
     }
     window.addEventListener('resize', resize);
     resize();
@@ -165,30 +172,36 @@
     
     function handleMove(x, y) {
         if (!isDragging) return;
+        
+        // Adjust sensitivity for mobile vs desktop
+        const sensitivity = 0.005;
         const dx = x - lastMouse.x;
         const dy = y - lastMouse.y;
         
-        targetRotation.y += dx * 0.005;
-        targetRotation.x -= dy * 0.005;
+        targetRotation.y += dx * sensitivity;
+        targetRotation.x -= dy * sensitivity;
         
         lastMouse = { x, y };
     }
     
     function handleEnd() { isDragging = false; }
 
+    // Mouse
     canvas.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
     window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', handleEnd);
 
+    // Touch
     canvas.addEventListener('touchstart', e => handleStart(e.touches[0].clientX, e.touches[0].clientY), {passive: false});
     window.addEventListener('touchmove', e => {
-        if(isDragging) e.preventDefault();
+        if(isDragging) e.preventDefault(); // Stop page scrolling while rotating globe
         handleMove(e.touches[0].clientX, e.touches[0].clientY);
     }, {passive: false});
     window.addEventListener('touchend', handleEnd);
 
     // --- ANIMATION ---
     function animate() {
+        // Clear rect using logical width/height (not dpr scaled)
         ctx.clearRect(0, 0, width, height);
 
         if (!isDragging) targetRotation.y += 0.002;
