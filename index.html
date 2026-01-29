@@ -25,70 +25,41 @@
             --font-main: 'Inter', sans-serif; 
         }
         
-        body { margin: 0; font-family: var(--font-main); background-color: var(--bg); color: var(--text); overflow-x: hidden; width: 100vw; height: 100vh; overscroll-behavior: none; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: var(--font-main); background-color: var(--bg); color: var(--text); overflow-x: hidden; }
         
-        /* Navigation */
         nav { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 1000; box-sizing: border-box; backdrop-filter: blur(5px); }
-        
         .logo-container { display: flex; align-items: center; gap: 15px; }
         .logo-img { height: 60px; width: auto; transition: height 0.3s; }
-        .logo-text { font-family: var(--font-logo); font-size: 1.5rem; letter-spacing: 0.05em; color: white; }
+        .logo-text { font-family: var(--font-logo); font-size: 2.5rem; letter-spacing: 0.05em; color: white; }
         .nav-link { color: var(--text-gray); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--text); }
 
-        /* Hero Section */
+        /* Hero */
         .hero { position: relative; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
-        
-        /* CANVAS FIXES FOR MOBILE */
-        #globe-canvas { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 0; 
-            cursor: grab; 
-            touch-action: none; /* Critical for Android/iOS touch handling */
-        }
+        #globe-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; cursor: grab; touch-action: none; }
         #globe-canvas:active { cursor: grabbing; }
-
         .hero-content { z-index: 1; padding: 0 1rem; pointer-events: none; width: 100%; box-sizing: border-box; }
         .hero-content > * { pointer-events: auto; }
+        h1 { font-family: var(--font-main); font-weight: 700; font-size: 4rem; margin: 0 0 1.5rem 0; letter-spacing: -0.04em; line-height: 1.2; padding-bottom: 0.1em; background: linear-gradient(to bottom right, #fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn { font-family: var(--font-main); background: var(--text); color: black; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-size: 1rem; font-weight: 700; transition: all 0.2s; cursor: pointer; display: inline-block; }
 
-        h1 { 
-            font-family: var(--font-main); 
-            font-weight: 700;
-            font-size: 4rem; 
-            margin: 0 0 1.5rem 0; 
-            letter-spacing: -0.04em;
-            line-height: 1.2; 
-            padding-bottom: 0.1em;
-            background: linear-gradient(to bottom right, #fff, #999); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-        }
+        /* Services Grid Section */
+        .section { padding: 8rem 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; background: var(--bg); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .card { background: var(--surface); padding: 3rem 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s, border-color 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .card h3 { font-family: var(--font-main); margin-top: 0; font-size: 1.5rem; color: var(--text); letter-spacing: -0.02em; }
+        .card p { color: var(--text-gray); line-height: 1.7; font-size: 1rem; font-weight: 300; }
+
+        footer { text-align: center; padding: 4rem 2rem; color: var(--text-gray); font-size: 0.875rem; border-top: 1px solid rgba(255,255,255,0.05); background: var(--bg); position: relative; z-index: 2; }
         
-        .btn { 
-            font-family: var(--font-main);
-            background: var(--text); 
-            color: black; 
-            padding: 1rem 2.5rem; 
-            border-radius: 50px; 
-            text-decoration: none; 
-            font-size: 1rem;
-            font-weight: 700;
-            transition: all 0.2s; 
-        }
-        
-        /* Footer */
-        footer { text-align: center; padding: 3rem; color: var(--text-gray); font-size: 0.875rem; border-top: 1px solid rgba(255,255,255,0.05); background: var(--bg); position: relative; z-index: 2; }
-        
-        /* MOBILE ADJUSTMENTS */
         @media (max-width: 768px) { 
             h1 { font-size: 2.2rem; margin-bottom: 2rem; } 
-            .logo-img { height: 40px; } /* Smaller logo on mobile */
-            .logo-text { font-size: 1.2rem; }
+            .logo-img { height: 40px; }
+            .logo-text { font-size: 1.8rem; }
             nav { padding: 1rem; }
+            .section { padding: 4rem 1.5rem; }
         }
     </style>
 </head>
@@ -106,148 +77,110 @@
     <canvas id="globe-canvas"></canvas>
     <div class="hero-content">
         <h1>your environmental<br>index watchdogs.</h1>
-        <a href="mailto:contact@dexdogs.com" class="btn">HOW?</a>
+        <a href="#services" class="btn">HOW?</a>
+    </div>
+</section>
+
+<section id="services" class="section">
+    <div class="grid">
+        <div class="card">
+            <h3>Negative Working Capital</h3>
+            <p>Optimizing cash conversion cycles and supply chain finance to unlock operational capital for growth.</p>
+        </div>
+        <div class="card">
+            <h3>Data Architecture</h3>
+            <p>Building high-integrity infrastructure for carbon data and environmental metrics reporting.</p>
+        </div>
+        <div class="card :cite">
+            <h3>Advisory</h3>
+            <p>Strategic guidance for high-growth firms navigating the complex landscape of environmental intelligence.</p>
+        </div>
     </div>
 </section>
 
 <footer>
-    &copy; 2026 Dexdogs.
+    &copy; 2026 Dexdogs Consulting. Boston, MA.
 </footer>
 
 <script>
     const canvas = document.getElementById('globe-canvas');
     const ctx = canvas.getContext('2d');
-
-    let width, height;
-    let particles = [];
-    
-    // GLOBE SETTINGS
-    // Dynamically adjust radius for mobile vs desktop
+    let width, height, particles = [];
     const isMobile = window.innerWidth < 768;
     const globeRadius = isMobile ? 160 : 260; 
-    const particleCount = isMobile ? 500 : 750; // Reduce count slightly for mobile performance
-    
-    let rotation = { x: 0, y: 0 };
-    let targetRotation = { x: 0, y: 0 };
-    let isDragging = false;
-    let lastMouse = { x: 0, y: 0 };
-
+    const particleCount = isMobile ? 500 : 750; 
+    let rotation = { x: 0, y: 0 }, targetRotation = { x: 0, y: 0 }, isDragging = false, lastMouse = { x: 0, y: 0 };
     const symbols = ['0', '1', 'KWh', 'CO\u2082', 'CH\u2084', 'kgCO\u2082e', 'ft', 'lbs', '$'];
 
     function resize() {
-        // High DPI Display Support (Retina Fix)
         const dpr = window.devicePixelRatio || 1;
         width = window.innerWidth;
         height = window.innerHeight;
-        
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
-        
         ctx.scale(dpr, dpr);
     }
     window.addEventListener('resize', resize);
     resize();
 
-    // Initialize particles
     for (let i = 0; i < particleCount; i++) {
         const phi = Math.acos(-1 + (2 * i) / particleCount);
         const theta = Math.sqrt(particleCount * Math.PI) * phi;
-        const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-
         particles.push({
             xBase: globeRadius * Math.cos(theta) * Math.sin(phi),
             yBase: globeRadius * Math.sin(theta) * Math.sin(phi),
             zBase: globeRadius * Math.cos(phi),
-            char: randomSymbol
+            char: symbols[Math.floor(Math.random() * symbols.length)]
         });
     }
 
-    // --- INTERACTION ---
-    function handleStart(x, y) {
-        isDragging = true;
-        lastMouse = { x, y };
-    }
-    
+    function handleStart(x, y) { isDragging = true; lastMouse = { x, y }; }
     function handleMove(x, y) {
         if (!isDragging) return;
-        
-        // Adjust sensitivity for mobile vs desktop
-        const sensitivity = 0.005;
         const dx = x - lastMouse.x;
         const dy = y - lastMouse.y;
-        
-        targetRotation.y += dx * sensitivity;
-        targetRotation.x -= dy * sensitivity;
-        
+        targetRotation.y += dx * 0.005;
+        targetRotation.x -= dy * 0.005;
         lastMouse = { x, y };
     }
-    
     function handleEnd() { isDragging = false; }
 
-    // Mouse
     canvas.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
     window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', handleEnd);
-
-    // Touch
     canvas.addEventListener('touchstart', e => handleStart(e.touches[0].clientX, e.touches[0].clientY), {passive: false});
-    window.addEventListener('touchmove', e => {
-        if(isDragging) e.preventDefault(); // Stop page scrolling while rotating globe
-        handleMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, {passive: false});
+    window.addEventListener('touchmove', e => { if(isDragging) e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
     window.addEventListener('touchend', handleEnd);
 
-    // --- ANIMATION ---
     function animate() {
-        // Clear rect using logical width/height (not dpr scaled)
         ctx.clearRect(0, 0, width, height);
-
         if (!isDragging) targetRotation.y += 0.002;
-        
         rotation.x += (targetRotation.x - rotation.x) * 0.1;
         rotation.y += (targetRotation.y - rotation.y) * 0.1;
-
-        const cosY = Math.cos(rotation.y);
-        const sinY = Math.sin(rotation.y);
-        const cosX = Math.cos(rotation.x);
-        const sinX = Math.sin(rotation.x);
-
+        const cosY = Math.cos(rotation.y), sinY = Math.sin(rotation.y), cosX = Math.cos(rotation.x), sinX = Math.sin(rotation.x);
         const renderList = [];
-
         particles.forEach(p => {
             let x1 = p.xBase * cosY - p.zBase * sinY;
             let z1 = p.zBase * cosY + p.xBase * sinY;
             let y2 = p.yBase * cosX - z1 * sinX;
             let z2 = z1 * cosX + p.yBase * sinX;
-
             renderList.push({ x: x1, y: y2, z: z2, char: p.char });
         });
-
         renderList.sort((a, b) => a.z - b.z);
-
-        const cx = width / 2;
-        const cy = height / 2;
-
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
+        const cx = width / 2, cy = height / 2;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         renderList.forEach(p => {
             const scale = 350 / (350 + p.z); 
-            const px = cx + p.x * scale;
-            const py = cy + p.y * scale;
+            const px = cx + p.x * scale, py = cy + p.y * scale;
             const alpha = (p.z + globeRadius) / (2.5 * globeRadius); 
-
             if(alpha > 0) {
                 ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-                let fontSize = 14 * scale;
-                if (p.char.length > 3) fontSize = 10 * scale; 
-                ctx.font = `${fontSize}px monospace`;
+                ctx.font = `${(p.char.length > 3 ? 10 : 14) * scale}px monospace`;
                 ctx.fillText(p.char, px, py);
             }
         });
-
         requestAnimationFrame(animate);
     }
     animate();
