@@ -32,7 +32,10 @@
         nav { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 1000; box-sizing: border-box; backdrop-filter: blur(5px); }
         .logo-container { display: flex; align-items: center; gap: 15px; }
         .logo-img { height: 60px; width: auto; transition: height 0.3s; }
-        .logo-text { font-family: var(--font-logo); font-size: 2.5rem; letter-spacing: 0.05em; color: white; }
+        
+        /* DESKTOP LOGO SIZE */
+        .logo-text { font-family: var(--font-logo); font-size: 2.5rem; letter-spacing: 0.05em; color: white; line-height: 1; margin-top: 5px; }
+        
         .nav-link { color: var(--text-gray); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--text); }
 
@@ -56,7 +59,7 @@
             background: linear-gradient(to bottom right, #fff, #999); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
-            text-shadow: 0 10px 30px rgba(0,0,0,0.8); /* Added shadow to make text pop against globe */
+            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         
         .btn { font-family: var(--font-main); background: var(--text); color: black; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-size: 1rem; font-weight: 700; transition: all 0.2s; cursor: pointer; display: inline-block; }
@@ -77,8 +80,11 @@
             .hero { height: 80vh; } 
             .section { padding: 1rem 1.5rem 4rem 1.5rem; }
             h1 { font-size: 2.2rem; margin-bottom: 2rem; } 
-            .logo-img { height: 40px; }
-            .logo-text { font-size: 1.8rem; }
+            
+            /* ADJUSTED MOBILE LOGO BALANCE */
+            .logo-img { height: 45px; } /* Slightly larger icon */
+            .logo-text { font-size: 2.2rem; } /* Larger text to match icon weight */
+            
             nav { padding: 1rem; }
         }
     </style>
@@ -127,39 +133,64 @@
     const ctx = canvas.getContext('2d');
     let width, height, particles = [];
     
-    const isMobile = window.innerWidth < 768;
-    
-    // --- ADJUSTED SETTINGS FOR SUBTLETY ---
-    const globeRadius = isMobile ? 160 : 260; 
-    // Reduced mobile count further (from 500 to 350) to prevent overcrowding/brightness
-    const particleCount = isMobile ? 350 : 750; 
-    
+    // Initial State
     let rotation = { x: 0, y: 0 }, targetRotation = { x: 0, y: 0 }, isDragging = false, lastMouse = { x: 0, y: 0 };
     const symbols = ['0', '1', 'KWh', 'CO\u2082', 'CH\u2084', 'kgCO\u2082e', 'ft', 'lbs', '$'];
+
+    // DYNAMIC VARIABLES (Set in resize)
+    let globeRadius;
+    let particleCount;
 
     function resize() {
         const dpr = window.devicePixelRatio || 1;
         width = window.innerWidth;
         height = window.innerHeight;
+        
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
         ctx.scale(dpr, dpr);
-    }
-    window.addEventListener('resize', resize);
-    resize();
+        
+        const isMobile = width < 768;
 
-    for (let i = 0; i < particleCount; i++) {
-        const phi = Math.acos(-1 + (2 * i) / particleCount);
-        const theta = Math.sqrt(particleCount * Math.PI) * phi;
-        particles.push({
-            xBase: globeRadius * Math.cos(theta) * Math.sin(phi),
-            yBase: globeRadius * Math.sin(theta) * Math.sin(phi),
-            zBase: globeRadius * Math.cos(phi),
-            char: symbols[Math.floor(Math.random() * symbols.length)]
-        });
+        // --- FIX 1: DYNAMIC RADIUS ---
+        // Calculate radius based on the SMALLER dimension (width or height)
+        // This ensures it never gets cut off top/bottom or left/right
+        const minDimension = Math.min(width, height);
+        
+        if (isMobile) {
+            globeRadius = minDimension * 0.40; // 40% of screen width on mobile
+            particleCount = 350;
+        } else {
+            globeRadius = minDimension * 0.35; // 35% of screen height on desktop
+            particleCount = 750;
+        }
+
+        // Re-initialize particles on resize to fit new radius
+        initParticles();
     }
+
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            const phi = Math.acos(-1 + (2 * i) / particleCount);
+            const theta = Math.sqrt(particleCount * Math.PI) * phi;
+            particles.push({
+                // Store normalized position (0 to 1) and multiply by current radius during render?
+                // Or just reset them here. Resetting is cleaner for this effect.
+                xBase: Math.cos(theta) * Math.sin(phi),
+                yBase: Math.sin(theta) * Math.sin(phi),
+                zBase: Math.cos(phi),
+                char: symbols[Math.floor(Math.random() * symbols.length)]
+            });
+        }
+    }
+
+    window.addEventListener('resize', resize);
+    
+    // Call resize immediately to set initial values
+    resize();
 
     function handleStart(x, y) { isDragging = true; lastMouse = { x, y }; }
     function handleMove(x, y) {
@@ -180,28 +211,45 @@
     window.addEventListener('touchend', handleEnd);
 
     function animate() {
+        // Clear logic dimensions
         ctx.clearRect(0, 0, width, height);
+        
         if (!isDragging) targetRotation.y += 0.002;
         rotation.x += (targetRotation.x - rotation.x) * 0.1;
         rotation.y += (targetRotation.y - rotation.y) * 0.1;
+        
         const cosY = Math.cos(rotation.y), sinY = Math.sin(rotation.y), cosX = Math.cos(rotation.x), sinX = Math.sin(rotation.x);
         const renderList = [];
+
         particles.forEach(p => {
-            let x1 = p.xBase * cosY - p.zBase * sinY;
-            let z1 = p.zBase * cosY + p.xBase * sinY;
-            let y2 = p.yBase * cosX - z1 * sinX;
-            let z2 = z1 * cosX + p.yBase * sinX;
+            // Multiply normalized base by CURRENT globeRadius
+            let x = p.xBase * globeRadius;
+            let y = p.yBase * globeRadius;
+            let z = p.zBase * globeRadius;
+
+            let x1 = x * cosY - z * sinY;
+            let z1 = z * cosY + x * sinY;
+            let y2 = y * cosX - z1 * sinX;
+            let z2 = z1 * cosX + y * sinX;
+            
             renderList.push({ x: x1, y: y2, z: z2, char: p.char });
         });
+
         renderList.sort((a, b) => a.z - b.z);
         const cx = width / 2, cy = height / 2;
+        
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        
         renderList.forEach(p => {
-            const scale = 350 / (350 + p.z); 
+            // Dynamic Perspective Scale based on radius
+            const perspective = globeRadius * 1.5; 
+            const scale = perspective / (perspective + p.z); 
+            
             const px = cx + p.x * scale, py = cy + p.y * scale;
             const alpha = (p.z + globeRadius) / (2.5 * globeRadius); 
+            
             if(alpha > 0) {
-                // --- FIX FOR BRIGHTNESS: Dimmed opacity by multiplying by 0.6 ---
+                // Opacity is 0.6 multiplier for subtle look
                 ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
                 ctx.font = `${(p.char.length > 3 ? 10 : 14) * scale}px monospace`;
                 ctx.fillText(p.char, px, py);
