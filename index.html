@@ -54,7 +54,7 @@
         }
         .nav-link:hover { color: var(--text); }
 
-        /* NEW: Navbar Divider (Desktop Default: Vertical) */
+        /* Navbar Divider */
         .nav-divider {
             width: 1px;
             height: 24px;
@@ -278,12 +278,17 @@
         .section { padding: 0rem 2rem 6rem 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; background: var(--bg); }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
         
+        /* FIX for Jumping Offset: Add scroll-margin-top */
+        #core-capabilities {
+            scroll-margin-top: 120px;
+        }
+
         .card { background: var(--surface); padding: 3rem 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s, border-color 0.3s; }
         .card:hover { transform: translateY(-5px); border-color: var(--accent); }
         .card h3 { font-family: var(--font-logo); margin-top: 0; font-size: 1.5rem; color: var(--text); letter-spacing: 0.05em; }
         .card p { color: var(--text-gray); line-height: 1.7; font-size: 1rem; font-weight: 300; }
 
-        /* NEW TEAM SECTION STYLES */
+        /* Team Section */
         #team {
             padding-top: 0; 
             padding-bottom: 6rem;
@@ -321,7 +326,7 @@
             font-weight: 300;
         }
         
-        /* NEW: Separator and Icon Styles */
+        /* Separator and Icon Styles */
         .separator {
             border: 0;
             height: 1px;
@@ -357,7 +362,14 @@
                 padding-bottom: 0;
             } 
             
+            /* Reduced padding on mobile sections */
             .section { padding: 1rem 1.5rem 4rem 1.5rem; }
+            
+            /* Tighter gap specifically for Core Capabilities on mobile */
+            #core-capabilities.section {
+                padding-bottom: 2rem; 
+            }
+            
             #timeline { padding: 0 1rem 4rem 1rem; }
             
             h1 { font-size: 1.6rem; margin-bottom: 1.5rem; } 
@@ -368,14 +380,13 @@
             .logo-text { font-size: 1.8rem; }
             nav { padding: 1rem; }
             
-            /* STACK Navigation on Mobile: Services ABOVE Connect */
+            /* Stack Navigation */
             .nav-right { 
                 flex-direction: column; 
                 gap: 0.5rem;
                 align-items: flex-end; 
             }
             
-            /* NEW: Rotate divider to horizontal for mobile stack */
             .nav-divider {
                 width: 30px;
                 height: 1px;
@@ -391,6 +402,19 @@
             .stage-content { width: calc(50% - 30px); margin: 0; }
             
             #backToTop { bottom: 20px; right: 20px; width: 40px; height: 40px; font-size: 1.2rem; }
+
+            /* MOBILE GAP FIXES */
+            .separator {
+                margin: 0 auto 2rem auto; /* Reduced from 6rem */
+            }
+
+            #team {
+                padding-bottom: 3rem; /* Reduced from 6rem */
+            }
+            
+            footer {
+                padding: 2rem 1rem; /* Reduced from 4rem */
+            }
         }
     </style>
 </head>
