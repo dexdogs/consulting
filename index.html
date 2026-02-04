@@ -253,7 +253,8 @@
 
         .timeline-end {
             text-align: center;
-            margin-top: 4rem;
+            /* REDUCED: Was 4rem, now 2rem to reduce gap to hero boards */
+            margin-top: 2rem;
             position: relative;
             z-index: 2;
         }
@@ -265,14 +266,14 @@
             display: inline-block; 
             transition: transform 0.2s;
         }
-
-        .timeline-end a:hover {
-            color: var(--text);
-            border-color: var(--accent);
-        }
+        
+        /* DELETED the specific .timeline-end a:hover rule here. 
+           It now inherits purely from .btn (white bg, black text) 
+           so it won't disappear on hover. */
 
         /* Services Grid Section */
-        .section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; background: var(--bg); }
+        /* REDUCED: Padding-top changed from 6rem to 0rem to tighten gap */
+        .section { padding: 0rem 2rem 6rem 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; background: var(--bg); }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
         
         .card { background: var(--surface); padding: 3rem 2.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s, border-color 0.3s; }
@@ -291,6 +292,7 @@
                 padding-bottom: 0;
             } 
             
+            /* Restored padding for mobile legibility */
             .section { padding: 1rem 1.5rem 4rem 1.5rem; }
             #timeline { padding: 0 1rem 4rem 1rem; }
             
@@ -331,7 +333,7 @@
     </div>
     
     <div class="nav-right">
-        <a href="#Our Core Capabilities" class="nav-link">services</a>
+        <a href="#core-capabilities" class="nav-link">services</a>
 
         <div class="dropdown">
             <span class="dropdown-trigger">connect</span>
@@ -378,11 +380,11 @@
     <div class="timeline-stage"><div class="stage-content"><div class="stage-title">The Regulators</div><div class="stage-subtitle">eg. IRS, Ministry of Energy, Building Departments</div></div><div class="stage-marker"></div></div>
     
     <div class="timeline-end">
-        <a href="#Our Core Capabilities" class="btn">Our Core Capabilities &darr;</a>
+        <a href="#core-capabilities" class="btn">Our Core Capabilities &darr;</a>
     </div>
 </section>
 
-<section id="Our Core Capabilities" class="section">
+<section id="core-capabilities" class="section">
     <div class="grid">
         <div class="card">
             <h3>Data Sourcing and Monitoring</h3>
